@@ -6,16 +6,17 @@
 //  Copyright © 2015 Alex. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "TLAppDelegate.h"
 
-@interface AppDelegate ()
+@interface TLAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation TLAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     // Override point for customization after application launch.
     return YES;
 }
@@ -41,5 +42,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+
 
 @end
