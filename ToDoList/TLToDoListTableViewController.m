@@ -7,42 +7,22 @@
 //
 
 #import "TLToDoListTableViewController.h"
-#import "ToDoItem.h"
-#import "AddToDoItemViewController.h"
 
-NSString *ReuseIdentifier = @"ListPrototypeCell";
+#import "TLAddToDoItemViewController.h"
+#import "TLToDoItem.h"
+
+
+static NSString *defaultCellReuseIdentifier = @"ListPrototypeCell";
 
 @interface TLToDoListTableViewController ()
 
-@property NSMutableArray *toDoItems;
+@property (nonatomic, strong) NSMutableArray *toDoItems;
 
 @end
 
 @implementation TLToDoListTableViewController
 
-    - (void)loadInitialData {
-        ToDoItem *item1 = [[ToDoItem alloc] init];
-        item1.itemName = @"Drink vodka";
-        [self.toDoItems addObject:item1];
-        ToDoItem *item2 = [[ToDoItem alloc] init];
-        item2.itemName = @"Play dotka";
-        [self.toDoItems addObject:item2];
-        ToDoItem *item3 = [[ToDoItem alloc] init];
-        item3.itemName = @"Listen to balalayka";
-        [self.toDoItems addObject:item3];
-    }
-
-
-- (IBAction)unwindToList:(UIStoryboardSegue *)segue {
-    AddToDoItemViewController *source = [segue sourceViewController];
-    ToDoItem *item = source.toDoItem;
-    if (item != nil) {
-    
-    [self.toDoItems addObject:item];
-    [self.tableView reloadData];
-    }
-}
-
+#pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,31 +30,27 @@ NSString *ReuseIdentifier = @"ListPrototypeCell";
     self.toDoItems = [[NSMutableArray alloc] init];
     [self loadInitialData];
     
-   
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-#pragma mark - Table view data source
+#pragma mark - Protocols
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
-//
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.toDoItems count];
 }
 
-
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView
-                             dequeueReusableCellWithIdentifier:ReuseIdentifier
+                             dequeueReusableCellWithIdentifier:defaultCellReuseIdentifier
                              forIndexPath:indexPath];
-    ToDoItem *toDoItem = [self.toDoItems objectAtIndex:indexPath.row];
+    TLToDoItem *toDoItem = [self.toDoItems objectAtIndex:indexPath.row];
     cell.textLabel.text = toDoItem.itemName;
     if (toDoItem.completed){
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -86,39 +62,54 @@ NSString *ReuseIdentifier = @"ListPrototypeCell";
     return cell;
 }
 
-
-
-
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [tableView beginUpdates];
+    
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [self.toDoItems removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] withRowAnimation:UITableViewRowAnimationTop];
     }
-    [tableView endUpdates];
+   
     
-        
-//        [self.toDoItems objectAtIndex:indexPath.row];
-//        [self.toDoItems removeObject:indexPath];//remove array object
-//        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        [self.tableView reloadData];
-    }
-//    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-//        
-//       
-//      
+}
 
 
-
-
-
-#pragma mark - Table ciew delegate
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    ToDoItem *tappedItem = [self.toDoItems objectAtIndex:indexPath.row];
+    TLToDoItem *tappedItem = [self.toDoItems objectAtIndex:indexPath.row];
     tappedItem.completed = !tappedItem.completed;
     [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationNone)];
     
 }
+
+
+#pragma mark - Public
+
+- (IBAction)unwindToList:(UIStoryboardSegue *)segue {
+    TLAddToDoItemViewController *source = [segue sourceViewController];
+    TLToDoItem *item = source.toDoItem;
+    if (item != nil) {
+        
+        [self.toDoItems addObject:item];
+        [self.tableView reloadData];
+    }
+}
+
+#pragma mark - Private
+
+- (void)loadInitialData {
+        TLToDoItem *item1 = [[TLToDoItem alloc] init];
+        item1.itemName = @"Drink vodka";
+        [self.toDoItems addObject:item1];
+        TLToDoItem *item2 = [[TLToDoItem alloc] init];
+        item2.itemName = @"Play dotka";
+        [self.toDoItems addObject:item2];
+        TLToDoItem *item3 = [[TLToDoItem alloc] init];
+        item3.itemName = @"Listen to balalayka";
+        [self.toDoItems addObject:item3];
+    }
+
+
+
 @end
+
